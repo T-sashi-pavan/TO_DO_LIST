@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Responsive To-Do List</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+            color: #333;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            overflow: hidden;
+            position: relative;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+            font-size: 2em;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+
+        .button-container {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.3s;
+            font-size: 1em;
+        }
+
+        button:hover {
+            background-color: #45a049;
+            transform: translateY(-2px);
+        }
+
+        .task-container {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            padding: 15px;
+            width: 90%;
+            max-width: 400px;
+            margin: 10px;
+        }
+
+        .input-container {
+            position: relative;
+            width: 100%;
+        }
+
+        input[type="text"], input[type="datetime-local"] {
+            width: calc(100% - 22px);
+            padding: 10px;
+            border: 2px solid #4CAF50;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            transition: border-color 0.3s;
+        }
+
+        input[type="text"]:focus, input[type="datetime-local"]:focus {
+            border-color: #2E7D32;
+            outline: none;
+        }
+
+        .speak-btn {
+            position: absolute;
+            right: 10px;
+            top: 10%;
+            background: #2196F3;
+            border: none;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .task-list {
+            list-style-type: none;
+            padding: 0;
+            width: 100%;
+        }
+
+        .task-item {
+            background: #f9f9f9;
+            margin: 5px 0;
+            padding: 10px;
+            border-radius: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background-color 0.3s;
+        }
+
+        .task-item:hover {
+            background: #e0e0e0;
+        }
+
+        .delete-btn {
+            background: #e57373;
+            border: none;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .delete-btn:hover {
+            background: #ef5350;
+        }
+
+        .back-btn {
+            margin-top: 10px;
+            background-color: #2196F3;
+        }
+
+        .back-btn:hover {
+            background-color: #1976D2;
+        }
+
+        /* Bubble Animation */
+        .bubble {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.5);
+            animation: float 8s infinite ease-in-out;
+            pointer-events: none;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0) scale(1);
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.7;
+            }
+            100% {
+                transform: translateY(-100vh) scale(1.5);
+                opacity: 0;
+            }
+        }
+
+        /* Generate Bubbles */
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: -1;
+        }
+
+        .bubble:nth-child(1) {
+            width: 40px;
+            height: 40px;
+            left: 10%;
+            animation-duration: 6s;
+            animation-delay: 0s;
+        }
+
+        .bubble:nth-child(2) {
+            width: 60px;
+            height: 60px;
+            left: 25%;
+            animation-duration: 8s;
+            animation-delay: 2s;
+        }
+
+        .bubble:nth-child(3) {
+            width: 20px;
+            height: 20px;
+            left: 50%;
+            animation-duration: 5s;
+            animation-delay: 1s;
+        }
+
+        .bubble:nth-child(4) {
+            width: 70px;
+            height: 70px;
+            left: 75%;
+            animation-duration: 10s;
+            animation-delay: 3s;
+        }
+
+        .bubble:nth-child(5) {
+            width: 50px;
+            height: 50px;
+            left: 90%;
+            animation-duration: 7s;
+            animation-delay: 4s;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.8em;
+            }
+
+            button {
+                padding: 8px 15px;
+                font-size: 0.9em;
+            }
+
+            .task-container {
+                width: 95%;
+                padding: 10px;
+            }
+
+            input[type="text"], input[type="datetime-local"] {
+                font-size: 0.9em;
+            }
+
+            .speak-btn {
+                padding: 4px 8px;
+                font-size: 0.8em;
+            }
+
+            .task-item {
+                font-size: 0.9em;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="bubble"></div>
+    <div class="bubble"></div>
+    <div class="bubble"></div>
+    <div class="bubble"></div>
+    <div class="bubble"></div>
+
+    <h1>TO-DO LIST</h1>
+    <div class="button-container">
+        <button id="personalBtn">Personal To-Do List</button>
+        <button id="professionalBtn">Professional To-Do List</button>
+    </div>
+
+    <div id="personalTasks" class="task-container">
+        <h2>Personal Tasks</h2>
+        <div class="input-container">
+            <input type="text" id="personalTaskInput" placeholder="Task Name">
+            <button id="startSpeechRecognitionPersonal" class="speak-btn">🎤</button>
+        </div>
+        <input type="datetime-local" id="personalTaskTime">
+        <button id="addPersonalTaskBtn">Add Task</button>
+        <ul id="personalTaskList" class="task-list"></ul>
+        <button class="back-btn" id="backToMainFromPersonal">Back</button>
+    </div>
+
+    <div id="professionalTasks" class="task-container">
+        <h2>Professional Tasks</h2>
+        <div class="input-container">
+            <input type="text" id="professionalTaskInput" placeholder="Task Name">
+            <button id="startSpeechRecognitionProfessional" class="speak-btn">🎤</button>
+        </div>
+        <input type="datetime-local" id="professionalTaskTime">
+        <button id="addProfessionalTaskBtn">Add Task</button>
+        <ul id="professionalTaskList" class="task-list"></ul>
+        <button class="back-btn" id="backToMainFromProfessional">Back</button>
+    </div>
+
+    <audio id="reminderSound" src="C:\Users\sessi\Downloads\mixkit-signal-alert-771.wav" preload="auto"></audio>
+   <script>
+        const personalBtn = document.getElementById('personalBtn');
+        const professionalBtn = document.getElementById('professionalBtn');
+        const personalTasks = document.getElementById('personalTasks');
+        const professionalTasks = document.getElementById('professionalTasks');
+        const backToMainFromPersonal = document.getElementById('backToMainFromPersonal');
+        const backToMainFromProfessional = document.getElementById('backToMainFromProfessional');
+        const reminderSound = document.getElementById('reminderSound');
+
+        personalBtn.addEventListener('click', function() {
+            personalTasks.style.display = 'flex';
+            professionalTasks.style.display = 'none';
+        });
+
+        professionalBtn.addEventListener('click', function() {
+            professionalTasks.style.display = 'flex';
+            personalTasks.style.display = 'none';
+        });
+
+        backToMainFromPersonal.addEventListener('click', function() {
+            personalTasks.style.display = 'none';
+        });
+
+        backToMainFromProfessional.addEventListener('click', function() {
+            professionalTasks.style.display = 'none';
+        });
+
+        function startSpeechRecognition(inputField) {
+            const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+            recognition.lang = 'en-US';
+            recognition.interimResults = false;
+            recognition.maxAlternatives = 1;
+
+            recognition.start();
+
+            recognition.onresult = function(event) {
+                const transcript = event.results[0][0].transcript;
+                inputField.value = transcript;
+            };
+
+            recognition.onerror = function(event) {
+                console.error('Speech recognition error', event.error);
+            };
+        }
+
+        document.getElementById('startSpeechRecognitionPersonal').addEventListener('click', function() {
+            startSpeechRecognition(document.getElementById('personalTaskInput'));
+        });
+
+        document.getElementById('startSpeechRecognitionProfessional').addEventListener('click', function() {
+            startSpeechRecognition(document.getElementById('professionalTaskInput'));
+        });
+
+        function addTask(input, timeInput, list) {
+            const taskText = input.value.trim();
+            const taskTime = timeInput.value;
+
+            if (taskText && taskTime) {
+                const li = document.createElement('li');
+                li.className = 'task-item';
+                li.innerText = `${taskText} - ${new Date(taskTime).toLocaleString()}`;
+
+                const deleteBtn = document.createElement('button');
+                deleteBtn.innerText = 'Delete';
+                deleteBtn.className = 'delete-btn';
+                deleteBtn.onclick = function() {
+                    list.removeChild(li);
+                };
+
+                li.appendChild(deleteBtn);
+                list.appendChild(li);
+                input.value = '';
+                timeInput.value = '';
+
+                const reminderTime = new Date(taskTime).getTime();
+                const currentTime = new Date().getTime();
+                const timeDifference = reminderTime - currentTime;
+
+                if (timeDifference > 0) {
+                    setTimeout(() => {
+                        reminderSound.play();
+                        alert(`Reminder: ${taskText}`);
+                        reminderSound.pause();
+                        reminderSound.currentTime = 0;
+                    }, timeDifference);
+                }
+            }
+        }
+
+        document.getElementById('addPersonalTaskBtn').addEventListener('click', function() {
+            addTask(
+                document.getElementById('personalTaskInput'),
+                document.getElementById('personalTaskTime'),
+                document.getElementById('personalTaskList')
+            );
+        });
+
+        document.getElementById('addProfessionalTaskBtn').addEventListener('click', function() {
+            addTask(
+                document.getElementById('professionalTaskInput'),
+                document.getElementById('professionalTaskTime'),
+                document.getElementById('professionalTaskList')
+            );
+        });
+    </script>
+</body>
+</html>
